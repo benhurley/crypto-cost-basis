@@ -122,11 +122,11 @@ function App() {
       <div className='result'>
         {`Estimated Cost Basis: `}
         <span className='dollars'>
-          {`~$${costBasis*amount} USD`}
+          {`~$${parseInt(costBasis*amount)} USD`}
         </span>
       </div>
       <div className='disclaimer'>DISCLAIMER: This website does not provide any tax, legal or accounting advice. This material has been prepared for informational purposes only, and is not intended to provide, and should not be relied on for, tax, legal or accounting advice. You should consult your own tax, legal and accounting advisors before engaging in any transaction. Data source: <a href='https://www.alphavantage.co/
-'>alphavantage.co</a> (a free api for historical crypto prices). Estimates are given based on the closing price of the asset on the given day.</div>
+'>alphavantage.co</a> (a free api for historical crypto prices). Estimates are given based on the closing price of the asset on the given day. The app is rounding values throughout the calculation to produce integers as output.</div>
       <div className='footer'><b>2022, All Rights Reserved.</b></div>
     </div>
   );
