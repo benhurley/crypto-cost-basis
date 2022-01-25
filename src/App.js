@@ -61,7 +61,7 @@ function App() {
     <div className="App">
       <h1 className="title">CRYPTO COST BASIS ENGINE</h1>
       <p className="subtitle">A good way to figure out what that NFT cost you last year.</p>
-      <img src={photo} height="175" />
+      <img src={photo} height="175" alt="accountant logo" />
       <header className="App-header">
         <LocalizationProvider dateAdapter={AdapterDateFns}>
         <DatePicker
