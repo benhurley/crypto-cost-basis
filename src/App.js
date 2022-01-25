@@ -8,6 +8,7 @@ import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import { DatePicker } from '@mui/lab';
 import { Button } from '@mui/material';
+import CircularProgress from '@mui/material/CircularProgress';
 import './App.css';
 const photo = require('./nerd.png');
 
@@ -16,8 +17,9 @@ function App() {
   const [purchaseDate, setPurchaseDate] = useState(null);
   const [amount, setAmount] = useState(null)
   const [costBasis, setCostBasis] = useState(0);
+  const [isFetching, setIsFetching] = useState(false);
 
-  const isButtonDisabled = coin === '' || !purchaseDate || !amount;
+  const isButtonDisabled = coin === '' || !purchaseDate || !amount || isFetching;
 
   const handleCoinChange = (event) => {
     setCoin(event.target.value);
@@ -42,7 +44,7 @@ function App() {
 
   const handleSubmit = () => {
     const cryptoPriceApi = `https://www.alphavantage.co/query?function=DIGITAL_CURRENCY_DAILY&symbol=${coin}&market=USD&apikey=B51E4JGUNRQKOGTH`;
-
+    setIsFetching(true);
     fetch(cryptoPriceApi).then(response => {
       if (!response.ok) {
         throw new Error(`status ${response.status}`);
@@ -52,7 +54,10 @@ function App() {
       .then(json => {
         const spotPrice = parseInt(json['Time Series (Digital Currency Daily)'][`${purchaseDate}`]['4a. close (USD)'])
         setCostBasis(Math.trunc(spotPrice));
+        setIsFetching(false);
       }).catch(e => {
+        debugger
+        setIsFetching(false);
         throw new Error(`API call for historical ${coin} price data failed: ${e}`);
       })
   }
@@ -121,9 +126,16 @@ function App() {
         }
       <div className='result'>
         {`Estimated Cost Basis: `}
-        <span className='dollars'>
-          {`~$${parseInt(costBasis*amount)} USD`}
-        </span>
+        {isFetching &&
+          <span className="loading">
+            <CircularProgress color="success" size={20}/>
+          </span>
+        }
+        {!isFetching && 
+          <span className='dollars'>
+            {`~$${parseInt(costBasis*amount)} USD`}
+          </span>
+        }
       </div>
       <div className='disclaimer'>DISCLAIMER: This website does not provide any tax, legal or accounting advice. This material has been prepared for informational purposes only, and is not intended to provide, and should not be relied on for, tax, legal or accounting advice. You should consult your own tax, legal and accounting advisors before engaging in any transaction. Data source: <a href='https://www.alphavantage.co/
 '>alphavantage.co</a> (a free api for historical crypto prices). Estimates are given based on the closing price of the asset on the given day. The app is rounding values throughout the calculation to produce integers as output.</div>

@@ -61,3 +61,8 @@ code {
   margin-right: 50px;
   margin-bottom: 30px;
 }
+
+.loading {
+  padding-left: 49px;
+  padding-right: 49px;
+}
