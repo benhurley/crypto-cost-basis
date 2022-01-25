@@ -48,7 +48,16 @@ code {
 .disclaimer {
   text-align: center;
   margin-top: 30px;
-  font-size: 8px;
+  font-size: 10px;
   margin-left: 50px;
   margin-right: 50px;
+}
+
+.footer {
+  text-align: center;
+  margin-top: 30px;
+  font-size: 10px;
+  margin-left: 50px;
+  margin-right: 50px;
+  margin-bottom: 30px;
 }
