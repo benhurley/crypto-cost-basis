@@ -59,7 +59,8 @@ const applyNewDate = (value) => {
 
   return (
     <div className="App">
-      <h1 className="title">NFT COST BASIS CALCULATOR</h1>
+      <h1 className="title">CRYPTO COST BASIS CALCULATOR</h1>
+      <p className="subtitle">A good way to figure out what that NFT cost you last year.</p>
       <img src={photo} height="175" />
       <header className="App-header">
         <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -86,6 +87,10 @@ const applyNewDate = (value) => {
           >
             <MenuItem value={"ETH"}>Ethereum</MenuItem>
             <MenuItem value={"SOL"}>Solana</MenuItem>
+            <MenuItem value={"ADA"}>Cardano</MenuItem>
+            <MenuItem value={"MATIC"}>Polygon</MenuItem>
+            <MenuItem value={"LUNA"}>Terra</MenuItem>
+
             </Select>
         </FormControl>
         </span>
@@ -109,7 +114,7 @@ const applyNewDate = (value) => {
         {!isButtonDisabled &&
           <Button
             size="large" 
-            variant="contained" 
+            variant="contained"
             onClick={handleSubmit}>
               Get Cost Basis
           </Button>
@@ -117,7 +122,7 @@ const applyNewDate = (value) => {
       <div className="result">
         {`Estimated Cost Basis: `}
         <span className="dollars">
-          {`$${costBasis*amount}`}
+          {`$${costBasis*amount} USD`}
         </span>
       </div>
       <div className="disclaimer">This website does not provide any tax, legal or accounting advice. This material has been prepared for informational purposes only, and is not intended to provide, and should not be relied on for, tax, legal or accounting advice. You should consult your own tax, legal and accounting advisors before engaging in any transaction. Data source: <a href="https://www.alphavantage.co/
