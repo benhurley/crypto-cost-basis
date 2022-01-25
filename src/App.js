@@ -67,6 +67,7 @@ const applyNewDate = (value) => {
           type="date"
           label="NFT Purchase Date"
           value={purchaseDate}
+          maxDate={new Date()}
           format="YYYY-MM-DD"
           onChange={(newValue) => {
             applyNewDate(newValue);
