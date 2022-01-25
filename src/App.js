@@ -66,7 +66,7 @@ function App() {
         <LocalizationProvider dateAdapter={AdapterDateFns}>
         <DatePicker
           type="date"
-          label="NFT Purchase Date"
+          label="Purchase Date"
           value={purchaseDate}
           maxDate={new Date()}
           format="YYYY-MM-DD"
@@ -126,7 +126,7 @@ function App() {
         </span>
       </div>
       <div className="disclaimer">This website does not provide any tax, legal or accounting advice. This material has been prepared for informational purposes only, and is not intended to provide, and should not be relied on for, tax, legal or accounting advice. You should consult your own tax, legal and accounting advisors before engaging in any transaction. Data source: <a href="https://www.alphavantage.co/
-">alphavantage.co</a> (a free api for historical crypto prices).</div>
+">alphavantage.co</a> (a free api for historical crypto prices). Estimates are given based on the closing price of the asset on the given day.</div>
       <div className="disclaimer"><b>2022, All Rights Reserved.</b></div>
     </div>
   );
