@@ -29,11 +29,11 @@ function App() {
     } else setAmount(0);
   }
 
-function isDate(dateStr) {
-  return !isNaN(new Date(dateStr).getDate());
-}
+  function isDate(dateStr) {
+    return !isNaN(new Date(dateStr).getDate());
+  }
 
-const applyNewDate = (value) => {
+  const applyNewDate = (value) => {
     if (isDate(value)) {
       const dateString = value.toISOString().slice(0,10);
       setPurchaseDate(dateString);
@@ -59,7 +59,7 @@ const applyNewDate = (value) => {
 
   return (
     <div className="App">
-      <h1 className="title">CRYPTO COST BASIS CALCULATOR</h1>
+      <h1 className="title">CRYPTO COST BASIS ENGINE</h1>
       <p className="subtitle">A good way to figure out what that NFT cost you last year.</p>
       <img src={photo} height="175" />
       <header className="App-header">
@@ -85,12 +85,12 @@ const applyNewDate = (value) => {
             label="Coin"
             onChange={handleCoinChange}
           >
-            <MenuItem value={"ETH"}>Ethereum</MenuItem>
-            <MenuItem value={"SOL"}>Solana</MenuItem>
+            <MenuItem value={"BTC"}>Bitcoin</MenuItem>
             <MenuItem value={"ADA"}>Cardano</MenuItem>
+            <MenuItem value={"ETH"}>Ethereum</MenuItem>
             <MenuItem value={"MATIC"}>Polygon</MenuItem>
+            <MenuItem value={"SOL"}>Solana</MenuItem>
             <MenuItem value={"LUNA"}>Terra</MenuItem>
-
             </Select>
         </FormControl>
         </span>
@@ -107,7 +107,7 @@ const applyNewDate = (value) => {
             disabled
             size="large" 
             variant="contained" 
-            onClick={() => null}>
+            onClick={null}>
               Get Cost Basis
           </Button>
         }
