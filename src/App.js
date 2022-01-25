@@ -34,8 +34,8 @@ function App() {
   }
 
   const applyNewDate = (value) => {
-    if (isDate(value)) {
-      const dateString = value.toISOString().slice(0,10);
+    if (!!value && isDate(value)) {
+      const dateString = value && value.toISOString().slice(0,10);
       setPurchaseDate(dateString);
     }
   }
@@ -50,7 +50,7 @@ function App() {
       return response.json();
     })
       .then(json => {
-        const spotPrice = parseFloat(json["Time Series (Digital Currency Daily)"][`${purchaseDate}`]['4a. close (USD)'])
+        const spotPrice = parseFloat(json['Time Series (Digital Currency Daily)'][`${purchaseDate}`]['4a. close (USD)'])
         setCostBasis(Math.trunc(spotPrice));
       }).catch(e => {
         throw new Error(`API call for historical ${coin} price data failed: ${e}`);
@@ -58,46 +58,46 @@ function App() {
   }
 
   return (
-    <div className="App">
-      <h1 className="title">CRYPTO COST BASIS ENGINE</h1>
-      <p className="subtitle">A good way to figure out what that NFT cost you last year.</p>
-      <img src={photo} height="175" alt="accountant logo" />
-      <header className="App-header">
+    <div className='App'>
+      <h1 className='title'>CRYPTO COST BASIS ENGINE</h1>
+      <p className='subtitle'>A good way to figure out what that NFT cost you last year.</p>
+      <img src={photo} height='175' alt='accountant logo' />
+      <header className='App-header'>
         <LocalizationProvider dateAdapter={AdapterDateFns}>
         <DatePicker
-          type="date"
-          label="Purchase Date"
+          type='date'
+          label='Purchase Date'
           value={purchaseDate}
           maxDate={new Date()}
-          format="YYYY-MM-DD"
+          format='YYYY-MM-DD'
           onChange={(newValue) => {
             applyNewDate(newValue);
           }}
           renderInput={(params) => <TextField {...params} />}
         />
       </LocalizationProvider>
-        <span className="form">
+        <span className='form'>
         <FormControl fullWidth>
-          <InputLabel required id="demo-simple-select-label">Coin</InputLabel>
+          <InputLabel required id='demo-simple-select-label'>Coin</InputLabel>
           <Select
-            id="select-crypto"
+            id='select-crypto'
             value={coin}
-            label="Coin"
+            label='Coin'
             onChange={handleCoinChange}
           >
-            <MenuItem value={"BTC"}>Bitcoin</MenuItem>
-            <MenuItem value={"ADA"}>Cardano</MenuItem>
-            <MenuItem value={"ETH"}>Ethereum</MenuItem>
-            <MenuItem value={"MATIC"}>Polygon</MenuItem>
-            <MenuItem value={"SOL"}>Solana</MenuItem>
-            <MenuItem value={"LUNA"}>Terra</MenuItem>
+            <MenuItem value={'BTC'}>Bitcoin</MenuItem>
+            <MenuItem value={'ADA'}>Cardano</MenuItem>
+            <MenuItem value={'ETH'}>Ethereum</MenuItem>
+            <MenuItem value={'MATIC'}>Polygon</MenuItem>
+            <MenuItem value={'SOL'}>Solana</MenuItem>
+            <MenuItem value={'LUNA'}>Terra</MenuItem>
             </Select>
         </FormControl>
         </span>
-        <span className="amount">
+        <span className='amount'>
           <TextField 
-            type="number" 
-            label={"Amount"}
+            type='number' 
+            label={'Amount'}
             onChange={handleAmountChange}
             required />
         </span>
@@ -105,29 +105,29 @@ function App() {
       {isButtonDisabled &&
           <Button
             disabled
-            size="large" 
-            variant="contained" 
+            size='large' 
+            variant='contained' 
             onClick={null}>
               Get Cost Basis
           </Button>
         }
         {!isButtonDisabled &&
           <Button
-            size="large" 
-            variant="contained"
+            size='large' 
+            variant='contained'
             onClick={handleSubmit}>
               Get Cost Basis
           </Button>
         }
-      <div className="result">
+      <div className='result'>
         {`Estimated Cost Basis: `}
-        <span className="dollars">
+        <span className='dollars'>
           {`$${costBasis*amount} USD`}
         </span>
       </div>
-      <div className="disclaimer">This website does not provide any tax, legal or accounting advice. This material has been prepared for informational purposes only, and is not intended to provide, and should not be relied on for, tax, legal or accounting advice. You should consult your own tax, legal and accounting advisors before engaging in any transaction. Data source: <a href="https://www.alphavantage.co/
-">alphavantage.co</a> (a free api for historical crypto prices). Estimates are given based on the closing price of the asset on the given day.</div>
-      <div className="disclaimer"><b>2022, All Rights Reserved.</b></div>
+      <div className='disclaimer'>This website does not provide any tax, legal or accounting advice. This material has been prepared for informational purposes only, and is not intended to provide, and should not be relied on for, tax, legal or accounting advice. You should consult your own tax, legal and accounting advisors before engaging in any transaction. Data source: <a href='https://www.alphavantage.co/
+'>alphavantage.co</a> (a free api for historical crypto prices). Estimates are given based on the closing price of the asset on the given day.</div>
+      <div className='disclaimer'><b>2022, All Rights Reserved.</b></div>
     </div>
   );
 }
