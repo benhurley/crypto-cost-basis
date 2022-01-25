@@ -11,3 +11,29 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.form {
+  min-width: 150px;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.amount {
+  max-width: 125px;
+  padding-right: 10px;
+}
+
+.result {
+  margin: 20px;
+  font-size: 35px;
+  color: rgb(121, 121, 121);
+    font-family: 'Courier New', Courier, monospace;
+
+}
+
+.title {
+  margin-top: 100px;
+  font-size: 48px;
+  color: rgb(121, 121, 121);
+  font-family: 'Courier New', Courier, monospace;
+}
