@@ -50,7 +50,7 @@ function App() {
       return response.json();
     })
       .then(json => {
-        const spotPrice = parseFloat(json['Time Series (Digital Currency Daily)'][`${purchaseDate}`]['4a. close (USD)'])
+        const spotPrice = parseInt(json['Time Series (Digital Currency Daily)'][`${purchaseDate}`]['4a. close (USD)'])
         setCostBasis(Math.trunc(spotPrice));
       }).catch(e => {
         throw new Error(`API call for historical ${coin} price data failed: ${e}`);
@@ -66,7 +66,7 @@ function App() {
         <LocalizationProvider dateAdapter={AdapterDateFns}>
         <DatePicker
           type='date'
-          label='Purchase Date'
+          label='Purchase Date*'
           value={purchaseDate}
           maxDate={new Date()}
           format='YYYY-MM-DD'
@@ -122,10 +122,10 @@ function App() {
       <div className='result'>
         {`Estimated Cost Basis: `}
         <span className='dollars'>
-          {`$${costBasis*amount} USD`}
+          {`~$${costBasis*amount} USD`}
         </span>
       </div>
-      <div className='disclaimer'>This website does not provide any tax, legal or accounting advice. This material has been prepared for informational purposes only, and is not intended to provide, and should not be relied on for, tax, legal or accounting advice. You should consult your own tax, legal and accounting advisors before engaging in any transaction. Data source: <a href='https://www.alphavantage.co/
+      <div className='disclaimer'>DISCLAIMER: This website does not provide any tax, legal or accounting advice. This material has been prepared for informational purposes only, and is not intended to provide, and should not be relied on for, tax, legal or accounting advice. You should consult your own tax, legal and accounting advisors before engaging in any transaction. Data source: <a href='https://www.alphavantage.co/
 '>alphavantage.co</a> (a free api for historical crypto prices). Estimates are given based on the closing price of the asset on the given day.</div>
       <div className='footer'><b>2022, All Rights Reserved.</b></div>
     </div>
