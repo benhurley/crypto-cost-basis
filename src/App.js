@@ -18,8 +18,9 @@ function App() {
   const [amount, setAmount] = useState(null)
   const [costBasis, setCostBasis] = useState(0);
   const [isFetching, setIsFetching] = useState(false);
+  const [isThrottled, setIsThrottled] = useState(false);
 
-  const isButtonDisabled = coin === '' || !purchaseDate || !amount || isFetching;
+  const isButtonDisabled = coin === '' || !purchaseDate || !amount || isFetching || isThrottled;
 
   const handleCoinChange = (event) => {
     setCoin(event.target.value);
@@ -42,8 +43,16 @@ function App() {
     }
   }
 
+  const handleThrottle = () => {
+    setIsThrottled(true);
+    setTimeout(() => {
+      setIsThrottled(false);
+      setCostBasis(0);
+    }, 60000);
+  }
+
   const handleSubmit = () => {
-    const cryptoPriceApi = `https://www.alphavantage.co/query?function=DIGITAL_CURRENCY_DAILY&symbol=${coin}&market=USD&apikey=B51E4JGUNRQKOGTH`;
+    const cryptoPriceApi = `https://www.alphavantage.co/query?function=DIGITAL_CURRENCY_DAILY&symbol=${coin}&market=CNY&apikey=B51E4JGUNRQKOGTH`;
     setIsFetching(true);
     fetch(cryptoPriceApi).then(response => {
       if (!response.ok) {
@@ -52,11 +61,13 @@ function App() {
       return response.json();
     })
       .then(json => {
-        const spotPrice = parseInt(json['Time Series (Digital Currency Daily)'][`${purchaseDate}`]['4a. close (USD)'])
+        if (!!json['Note']) {
+          handleThrottle();
+        }
+        const spotPrice = parseInt(json['Time Series (Digital Currency Daily)'][`${purchaseDate}`]['4b. close (USD)'])
         setCostBasis(Math.trunc(spotPrice));
         setIsFetching(false);
       }).catch(e => {
-        debugger
         setIsFetching(false);
         throw new Error(`API call for historical ${coin} price data failed: ${e}`);
       })
@@ -69,77 +80,80 @@ function App() {
       <img src={photo} height='175' alt='accountant logo' />
       <header className='App-header'>
         <LocalizationProvider dateAdapter={AdapterDateFns}>
-        <DatePicker
-          type='date'
-          label='Purchase Date*'
-          value={purchaseDate}
-          maxDate={new Date()}
-          format='YYYY-MM-DD'
-          onChange={(newValue) => {
-            applyNewDate(newValue);
-          }}
-          renderInput={(params) => <TextField {...params} />}
-        />
-      </LocalizationProvider>
+          <DatePicker
+            type='date'
+            label='Purchase Date*'
+            value={purchaseDate}
+            maxDate={new Date()}
+            format='YYYY-MM-DD'
+            onChange={(newValue) => {
+              applyNewDate(newValue);
+            }}
+            renderInput={(params) => <TextField {...params} />}
+          />
+        </LocalizationProvider>
         <span className='form'>
-        <FormControl fullWidth>
-          <InputLabel required id='demo-simple-select-label'>Coin</InputLabel>
-          <Select
-            id='select-crypto'
-            value={coin}
-            label='Coin'
-            onChange={handleCoinChange}
-          >
-            <MenuItem value={'BTC'}>Bitcoin</MenuItem>
-            <MenuItem value={'ADA'}>Cardano</MenuItem>
-            <MenuItem value={'ETH'}>Ethereum</MenuItem>
-            <MenuItem value={'MATIC'}>Polygon</MenuItem>
-            <MenuItem value={'SOL'}>Solana</MenuItem>
-            <MenuItem value={'LUNA'}>Terra</MenuItem>
+          <FormControl fullWidth>
+            <InputLabel required id='demo-simple-select-label'>Coin</InputLabel>
+            <Select
+              id='select-crypto'
+              value={coin}
+              label='Coin'
+              onChange={handleCoinChange}
+            >
+              <MenuItem value={'BTC'}>Bitcoin</MenuItem>
+              <MenuItem value={'ADA'}>Cardano</MenuItem>
+              <MenuItem value={'ETH'}>Ethereum</MenuItem>
+              <MenuItem value={'MATIC'}>Polygon</MenuItem>
+              <MenuItem value={'SOL'}>Solana</MenuItem>
+              <MenuItem value={'LUNA'}>Terra</MenuItem>
             </Select>
-        </FormControl>
+          </FormControl>
         </span>
         <span className='amount'>
-          <TextField 
-            type='number' 
+          <TextField
+            type='number'
             label={'Amount'}
             onChange={handleAmountChange}
             required />
         </span>
       </header>
       {isButtonDisabled &&
-          <Button
-            disabled
-            size='large' 
-            variant='contained' 
-            onClick={null}>
-              Get Cost Basis
-          </Button>
-        }
-        {!isButtonDisabled &&
-          <Button
-            size='large' 
-            variant='contained'
-            onClick={handleSubmit}>
-              Get Cost Basis
-          </Button>
-        }
+        <Button
+          disabled
+          size='large'
+          variant='contained'
+          onClick={null}>
+          Get Cost Basis
+        </Button>
+      }
+      {!isButtonDisabled &&
+        <Button
+          size='large'
+          variant='contained'
+          onClick={handleSubmit}>
+          Get Cost Basis
+        </Button>
+      }
       <div className='result'>
         {`Estimated Cost Basis: `}
         {isFetching &&
           <span className="loading">
-            <CircularProgress color="success" size={20}/>
+            <CircularProgress color="success" size={20} />
           </span>
         }
-        {!isFetching && 
+        {!isFetching && !isThrottled &&
           <span className='dollars'>
-            {`~$${parseInt(costBasis*amount)} USD`}
+            {`~$${parseInt(costBasis * amount)} USD`}
           </span>
+        }
+        {isThrottled &&
+          <span className="throttled">Throttled: Max 5 requests per minute.</span>
         }
       </div>
       <div className='disclaimer'>DISCLAIMER: This website does not provide any tax, legal or accounting advice. This material has been prepared for informational purposes only, and is not intended to provide, and should not be relied on for, tax, legal or accounting advice. You should consult your own tax, legal and accounting advisors before engaging in any transaction. Data source: <a href='https://www.alphavantage.co/
 '>alphavantage.co</a> (a free api for historical crypto prices). Estimates are given based on the closing price of the asset on the given day. The app is rounding values throughout the calculation to produce integers as output.</div>
-      <div className='footer'><b>2022, All Rights Reserved.</b></div>
+      <div className='footer'><b>2023, All Rights Reserved.</b></div>
     </div>
   );
 }
