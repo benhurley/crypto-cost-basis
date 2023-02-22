@@ -111,11 +111,14 @@ function App() {
               onChange={handleCoinChange}
             >
               <MenuItem value={'BTC'}>Bitcoin</MenuItem>
-              <MenuItem value={'ADA'}>Cardano</MenuItem>
               <MenuItem value={'ETH'}>Ethereum</MenuItem>
-              <MenuItem value={'MATIC'}>Polygon</MenuItem>
               <MenuItem value={'SOL'}>Solana</MenuItem>
-              <MenuItem value={'LUNA'}>Terra</MenuItem>
+              <MenuItem value={'DOGE'}>Dogecoin</MenuItem>
+              <MenuItem value={'SHIB'}>Shiba-Inu</MenuItem>
+              <MenuItem value={'MATIC'}>Polygon</MenuItem>
+              <MenuItem value={'ADA'}>Cardano</MenuItem>
+              <MenuItem value={'XRP'}>Ripple</MenuItem>
+              <MenuItem value={'LTC'}>Litecoin</MenuItem>
             </Select>
           </FormControl>
         </span>
@@ -150,9 +153,13 @@ function App() {
           <span className="throttled">Throttled: Max 5 requests per minute.</span>
         }
       </div>
-      <div className='disclaimer'>DISCLAIMER: This website does not provide any tax, legal or accounting advice. This material has been prepared for informational purposes only, and is not intended to provide, and should not be relied on for, tax, legal or accounting advice. You should consult your own tax, legal and accounting advisors before engaging in any transaction. Data source: <a href='https://www.alphavantage.co/
-'>alphavantage.co</a> (a free api for historical crypto prices). Estimates are given based on the closing price of the asset on the given day.</div>
-      <div className='footer'><b>2023, All Rights Reserved.</b></div>
+      <div className='disclaimer'>
+        Disclaimer: The information provided on this website is for educational purposes only and should not be construed as financial or investment advice. We provide cost basis estimations based on historical price data in cryptocurrencies, which is subject to market volatility and may not be accurate at the time of your transaction. You should always conduct your own research and seek professional advice before making any financial decisions. We do not guarantee the accuracy or completeness of the information on this site and are not liable for any errors or omissions, or for any losses or damages resulting from the use of this information. By using this site, you acknowledge and agree that you are solely responsible for any investment decisions you make based on the information provided.
+      </div>
+      <div className='disclaimer'>
+        Data source: <a target="_blank" rel="noopener noreferrer" href='https://www.alphavantage.co/'>alphavantage.co</a>, a free api for historical crypto prices. Estimates are given based on the closing price of the asset on the given day.
+      </div>
+      <div className='footer'><b>Created with ♥ by <a target="_blank" rel="noopener noreferrer" href="https://justben.fyi">Ben</a>. 2023, All Rights Reserved.</b></div>
     </div>
   );
 }
