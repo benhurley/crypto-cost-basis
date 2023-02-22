@@ -10,35 +10,46 @@ import { DatePicker } from '@mui/lab';
 import { Button } from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress';
 import './App.css';
+
 const photo = require('./nerd.png');
 
+interface Event {
+  target: {
+    value: string,
+  }
+};
+
 function App() {
-  const [coin, setCoin] = useState('');
-  const [purchaseDate, setPurchaseDate] = useState(null);
-  const [amount, setAmount] = useState(null)
-  const [costBasis, setCostBasis] = useState(0);
-  const [isFetching, setIsFetching] = useState(false);
-  const [isThrottled, setIsThrottled] = useState(false);
+  const [coin, setCoin] = useState<string>('');
+  const [purchaseDate, setPurchaseDate] = useState<string | null>(null);
+  const [amount, setAmount] = useState<number>(0)
+  const [costBasis, setCostBasis] = useState<number>(0);
+  const [isFetching, setIsFetching] = useState<boolean>(false);
+  const [isThrottled, setIsThrottled] = useState<boolean>(false);
 
   const isButtonDisabled = coin === '' || !purchaseDate || !amount || isFetching || isThrottled;
 
-  const handleCoinChange = (event) => {
+  const handleCoinChange = (event: Event) => {
     setCoin(event.target.value);
   };
 
-  const handleAmountChange = (event) => {
-    if (event.target.value > 0) {
+  const round = (num: number): number => {
+    return Math.round(num * 100) / 100;
+  }
+
+  const handleAmountChange = (event: Event) => {
+    if (!!event.target.value) {
       setAmount(parseFloat(event.target.value));
     } else setAmount(0);
   }
 
-  function isDate(dateStr) {
+  const isDate = (dateStr: string) => {
     return !isNaN(new Date(dateStr).getDate());
   }
 
-  const applyNewDate = (value) => {
+  const applyNewDate = (value: any) => {
     if (!!value && isDate(value)) {
-      const dateString = value && value.toISOString().slice(0,10);
+      const dateString = value.toISOString().slice(0, 10);
       setPurchaseDate(dateString);
     }
   }
@@ -64,8 +75,8 @@ function App() {
         if (!!json['Note']) {
           handleThrottle();
         }
-        const spotPrice = parseInt(json['Time Series (Digital Currency Daily)'][`${purchaseDate}`]['4b. close (USD)'])
-        setCostBasis(Math.trunc(spotPrice));
+        const spotPrice = parseFloat(json['Time Series (Digital Currency Daily)'][`${purchaseDate}`]['4b. close (USD)'])
+        setCostBasis(round(spotPrice * amount));
         setIsFetching(false);
       }).catch(e => {
         setIsFetching(false);
@@ -76,16 +87,14 @@ function App() {
   return (
     <div className='App'>
       <h1 className='title'>CRYPTO COST BASIS ENGINE</h1>
-      <p className='subtitle'>A good way to figure out what that NFT cost you last year.</p>
+      <p className='subtitle'>A good way to guess what that NFT cost you last year.</p>
       <img src={photo} height='175' alt='accountant logo' />
       <header className='App-header'>
         <LocalizationProvider dateAdapter={AdapterDateFns}>
           <DatePicker
-            type='date'
             label='Purchase Date*'
             value={purchaseDate}
             maxDate={new Date()}
-            format='YYYY-MM-DD'
             onChange={(newValue) => {
               applyNewDate(newValue);
             }}
@@ -118,25 +127,15 @@ function App() {
             required />
         </span>
       </header>
-      {isButtonDisabled &&
-        <Button
-          disabled
-          size='large'
-          variant='contained'
-          onClick={null}>
-          Get Cost Basis
-        </Button>
-      }
-      {!isButtonDisabled &&
-        <Button
-          size='large'
-          variant='contained'
-          onClick={handleSubmit}>
-          Get Cost Basis
-        </Button>
-      }
+      <Button
+        disabled={isButtonDisabled}
+        size='large'
+        variant='contained'
+        onClick={handleSubmit}>
+        Get Estimate
+      </Button>
       <div className='result'>
-        {`Estimated Cost Basis: `}
+        {`Estimation: `}
         {isFetching &&
           <span className="loading">
             <CircularProgress color="success" size={20} />
@@ -144,7 +143,7 @@ function App() {
         }
         {!isFetching && !isThrottled &&
           <span className='dollars'>
-            {`~$${parseInt(costBasis * amount)} USD`}
+            {`$${costBasis} USD`}
           </span>
         }
         {isThrottled &&
@@ -152,7 +151,7 @@ function App() {
         }
       </div>
       <div className='disclaimer'>DISCLAIMER: This website does not provide any tax, legal or accounting advice. This material has been prepared for informational purposes only, and is not intended to provide, and should not be relied on for, tax, legal or accounting advice. You should consult your own tax, legal and accounting advisors before engaging in any transaction. Data source: <a href='https://www.alphavantage.co/
-'>alphavantage.co</a> (a free api for historical crypto prices). Estimates are given based on the closing price of the asset on the given day. The app is rounding values throughout the calculation to produce integers as output.</div>
+'>alphavantage.co</a> (a free api for historical crypto prices). Estimates are given based on the closing price of the asset on the given day.</div>
       <div className='footer'><b>2023, All Rights Reserved.</b></div>
     </div>
   );
