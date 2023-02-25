@@ -13,12 +13,13 @@ color: green;
 font-weight: bold;
 `
 
-const Throttled = styled.span`
+const Warning = styled.div`
 color: red;
 font-weight: bold;
+margin: 10px;
 `
 
-const Loading = styled.span`
+const Loading = styled.div`
 padding-left: 25px;
 padding-right: 25px;
 `
@@ -27,12 +28,14 @@ type ResultProps = {
     data: number | undefined,
     isFetching: boolean,
     isThrottled: boolean,
+    error: any,
 }
 
 export const Result = ({
     data, 
     isFetching, 
-    isThrottled
+    isThrottled,
+    error,
 } : ResultProps) => {
     return (
         <Container>
@@ -41,13 +44,16 @@ export const Result = ({
                     <CircularProgress color="success" size={20} />
                 </Loading>
             }
-            {data && !isFetching &&
+            {data && !isFetching && !error &&
                 <Dollars>
                     {`Estimate: $${data || 0} USD`}
                 </Dollars>
             }
             {isThrottled &&
-                <Throttled>Throttled: Max 5 requests per minute.</Throttled>
+                <Warning>Max 5 requests per minute.</Warning>
+            }
+            {error &&
+                <Warning>Error fetching price data. Please try a different date.</Warning>
             }
         </Container>
     );

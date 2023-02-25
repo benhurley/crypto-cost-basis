@@ -39,19 +39,33 @@ type FormProps = {
     setAmount: Dispatch<SetStateAction<number>>,
     setCoin: Dispatch<SetStateAction<string>>,
     setPurchaseDate: Dispatch<SetStateAction<string | null>>,
+    setLocalizedPurchaseDate: Dispatch<SetStateAction<string | null>>,
 }
 
-export const Form = ({ 
-    coin, 
-    purchaseDate, 
-    setAmount, 
-    setCoin, 
-    setPurchaseDate 
-} : FormProps) => {
+export const Form = ({
+    coin,
+    purchaseDate,
+    setAmount,
+    setCoin,
+    setPurchaseDate,
+    setLocalizedPurchaseDate,
+}: FormProps) => {
     const applyNewDate = (value: Date | null) => {
         if (!!value) {
             const dateString = value.toISOString().slice(0, 10);
+            // set purchase date in UTC for MUI Date Picker
             setPurchaseDate(dateString);
+            // convert the date and time to an ISO string in EST
+            // with format YYYY-MM-DD for api response parsing
+            const isoString = value.toLocaleString('en-US', {
+                timeZone: 'America/New_York',
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit'
+                }).split('/').reverse().join('-');
+            const parts = isoString.split('-');
+            const localDateString = `${parts[0]}-${parts[2]}-${parts[1]}`;
+            setLocalizedPurchaseDate(localDateString);
         }
     }
 
@@ -73,12 +87,13 @@ export const Form = ({
             </LocalizationProvider>
             <Container>
                 <FormControl fullWidth>
-                    <InputLabel required id='demo-simple-select-label'>Coin</InputLabel>
+                    <InputLabel required id='coin-label'>Coin</InputLabel>
                     <Select
                         id='select-crypto'
                         value={coin}
                         label='Coin'
                         onChange={(event) => setCoin(event.target.value)}
+                        MenuProps={{ PaperProps: { sx: { maxHeight: 175 } } }}
                     >
                         <MenuItem value={'BTC'}>Bitcoin</MenuItem>
                         <MenuItem value={'ETH'}>Ethereum</MenuItem>

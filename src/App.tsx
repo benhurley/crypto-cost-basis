@@ -62,6 +62,7 @@ margin: 0px 40px 30px 40px;
 function App() {
   const [coin, setCoin] = useState<string>('');
   const [purchaseDate, setPurchaseDate] = useState<string | null>(null);
+  const [localizedPurchaseDate, setLocalizedPurchaseDate] = useState<string | null>(null);
   const [amount, setAmount] = useState<number>(0)
   const [isThrottled, setIsThrottled] = useState<boolean>(false);
 
@@ -81,11 +82,11 @@ function App() {
       if (!!result && result['Note']) {
         handleThrottle();
       } else if (!!result && result["Time Series (Digital Currency Daily)"]) {
-        const price = result["Time Series (Digital Currency Daily)"][purchaseDate || ""]['4b. close (USD)'];
+        const price = result["Time Series (Digital Currency Daily)"][localizedPurchaseDate || ""]['4b. close (USD)'];
         if (!!price) {
           return round(parseFloat(price) * amount);
         } else {
-          throw new Error(`Failed to parse price for ${coin} on ${purchaseDate}`);
+          throw new Error(`Failed to parse price for ${coin} on ${localizedPurchaseDate}`);
         }
       }
     }
@@ -93,10 +94,6 @@ function App() {
 
   const { isFetching, error, data, refetch } = useQuery('cryptoPrices', fetchPrice, { enabled: false });
   const isButtonDisabled = coin === '' || !purchaseDate || !amount || isFetching || isThrottled;
-
-  if (error) {
-    throw new Error(`API call for historical ${coin} price data failed`);
-  }
 
   return (
     <>
@@ -111,6 +108,7 @@ function App() {
           setAmount={setAmount}
           setCoin={setCoin}
           setPurchaseDate={setPurchaseDate}
+          setLocalizedPurchaseDate={setLocalizedPurchaseDate}
         />
         <Button
           disabled={isButtonDisabled}
@@ -123,6 +121,7 @@ function App() {
           data={data}
           isFetching={isFetching}
           isThrottled={isThrottled}
+          error={error}
         />
         <Footer />
         <Disclaimer />
