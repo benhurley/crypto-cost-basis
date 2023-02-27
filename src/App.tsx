@@ -93,13 +93,13 @@ function App() {
   };
 
   const { isFetching, error, data, refetch } = useQuery('cryptoPrices', fetchPrice, { enabled: false });
-  const isButtonDisabled = coin === '' || !purchaseDate || !amount || isFetching || isThrottled;
+  const isButtonDisabled = coin === '' || !purchaseDate || !amount || amount < 1 || isFetching || isThrottled;
 
   return (
     <>
       <GlobalStyle />
       <AppContainer>
-        <Title>CRYPTO COST BASIS ENGINE</Title>
+        <Title>CRYPTO COST-BASIS ENGINE</Title>
         <Subtitle>A good way to guess what that NFT cost you last year.</Subtitle>
         <img src={photo} height='175' alt='accountant logo' />
         <Form

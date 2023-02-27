@@ -22,7 +22,6 @@ margin-left: 15px;
 margin-right: 15px;
 `
 
-
 const Amount = styled.span`
 max-width: 125px;
 `
@@ -51,7 +50,7 @@ export const Form = ({
     setLocalizedPurchaseDate,
 }: FormProps) => {
     const applyNewDate = (value: Date | null) => {
-        if (!!value) {
+        if (!!value && (value.toString() !== "Invalid Date")) {
             const dateString = value.toISOString().slice(0, 10);
             // set purchase date in UTC for MUI Date Picker
             setPurchaseDate(dateString);
@@ -78,6 +77,7 @@ export const Form = ({
                     views={['year', 'day']}
                     label='Date*'
                     value={purchaseDate}
+                    minDate={new Date('June 4, 2020')}
                     maxDate={new Date()}
                     onChange={(newValue) => {
                         applyNewDate(newValue);
