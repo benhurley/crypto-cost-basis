@@ -34,8 +34,9 @@ padding-right: 10px;
 
 type FormProps = {
     coin: string,
+    firstDate: Date,
     purchaseDate: string | null,
-    setAmount: Dispatch<SetStateAction<number>>,
+    setAmount: Dispatch<SetStateAction<number | null>>,
     setCoin: Dispatch<SetStateAction<string>>,
     setPurchaseDate: Dispatch<SetStateAction<string | null>>,
     setLocalizedPurchaseDate: Dispatch<SetStateAction<string | null>>,
@@ -43,6 +44,7 @@ type FormProps = {
 
 export const Form = ({
     coin,
+    firstDate,
     purchaseDate,
     setAmount,
     setCoin,
@@ -62,9 +64,9 @@ export const Form = ({
                 month: '2-digit',
                 day: '2-digit'
                 }).split('/').reverse().join('-');
-            const parts = isoString.split('-');
-            const localDateString = `${parts[0]}-${parts[2]}-${parts[1]}`;
-            setLocalizedPurchaseDate(localDateString);
+                const parts = isoString.split('-');
+                const localDateString = `${parts[0]}-${parts[2]}-${parts[1]}`;
+                setLocalizedPurchaseDate(localDateString);
         }
     }
 
@@ -77,7 +79,7 @@ export const Form = ({
                     views={['year', 'day']}
                     label='Date*'
                     value={purchaseDate}
-                    minDate={new Date('June 4, 2020')}
+                    minDate={firstDate}
                     maxDate={new Date()}
                     onChange={(newValue) => {
                         applyNewDate(newValue);
@@ -110,7 +112,7 @@ export const Form = ({
             <Amount>
                 <TextField
                     type='number'
-                    label={'Amount'}
+                    label={'Quantity'}
                     onChange={(event) => setAmount(parseFloat(event.target.value))}
                     required />
             </Amount>

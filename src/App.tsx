@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Button } from '@mui/material';
 import { useQuery } from 'react-query';
 import { round } from './helpers';
@@ -7,6 +7,7 @@ import { Form } from './components/form';
 import { Disclaimer } from './components/disclaimer';
 import { Footer } from './components/footer';
 import { Result } from './components/result';
+import isBefore from 'date-fns/isBefore';
 
 const photo = require('./img/nerd.png');
 
@@ -59,12 +60,20 @@ const Subtitle = styled.p`
 margin: 0px 40px 30px 40px;
 `
 
+const InputError = styled.p`
+color: red;
+margin: 30px;
+`
+
 function App() {
   const [coin, setCoin] = useState<string>('');
   const [purchaseDate, setPurchaseDate] = useState<string | null>(null);
   const [localizedPurchaseDate, setLocalizedPurchaseDate] = useState<string | null>(null);
-  const [amount, setAmount] = useState<number>(0)
+  const [amount, setAmount] = useState<number | null>(null)
   const [isThrottled, setIsThrottled] = useState<boolean>(false);
+  const [inputError, setInputError] = useState<string | null>(null);
+  const firstDate: Date = useMemo(() => new Date('June 4, 2020'), []); // earliest date api supports
+  const isOutOfRangeDate = !!purchaseDate && isBefore(new Date(purchaseDate), firstDate)
 
   const handleThrottle = () => {
     setIsThrottled(true);
@@ -83,7 +92,7 @@ function App() {
         handleThrottle();
       } else if (!!result && result["Time Series (Digital Currency Daily)"]) {
         const price = result["Time Series (Digital Currency Daily)"][localizedPurchaseDate || ""]['4b. close (USD)'];
-        if (!!price) {
+        if (!!price && !!amount) {
           return round(parseFloat(price) * amount);
         } else {
           throw new Error(`Failed to parse price for ${coin} on ${localizedPurchaseDate}`);
@@ -93,7 +102,17 @@ function App() {
   };
 
   const { isFetching, error, data, refetch } = useQuery('cryptoPrices', fetchPrice, { enabled: false });
-  const isButtonDisabled = coin === '' || !purchaseDate || !amount || amount < 1 || isFetching || isThrottled;
+  const isButtonDisabled = coin === '' || !purchaseDate || isOutOfRangeDate || !amount || amount <= 0 || isFetching || isThrottled;
+
+  useEffect(() => {
+    if (!!coin && !!amount && isOutOfRangeDate) {
+      setInputError(`Must be a date after ${firstDate.toString().slice(0,15)}`)
+    } else if (amount !== null && amount <= 0) {
+      setInputError('Quantity must be a positive value')
+    } else {
+      setInputError(null)
+    }
+  }, [amount, coin, isOutOfRangeDate, firstDate])
 
   return (
     <>
@@ -104,12 +123,16 @@ function App() {
         <img src={photo} height='175' alt='accountant logo' />
         <Form
           coin={coin}
+          firstDate={firstDate}
           purchaseDate={purchaseDate}
           setAmount={setAmount}
           setCoin={setCoin}
           setPurchaseDate={setPurchaseDate}
           setLocalizedPurchaseDate={setLocalizedPurchaseDate}
         />
+        {inputError &&
+          <InputError>{inputError}</InputError>
+        }
         <Button
           disabled={isButtonDisabled}
           size='large'
@@ -117,7 +140,7 @@ function App() {
           onClick={() => refetch()}>
           Get Estimate
         </Button>
-        <Result 
+        <Result
           data={data}
           isFetching={isFetching}
           isThrottled={isThrottled}
