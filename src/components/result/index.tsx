@@ -1,5 +1,7 @@
 import styled from "styled-components"
 import { CircularProgress } from "@mui/material"
+import { useContext } from "react"
+import { AlphaVantageContext, TAlphaVantageContext } from "../../contexts"
 
 const Container = styled.div`
 margin-top: 30px;
@@ -24,19 +26,8 @@ padding-left: 25px;
 padding-right: 25px;
 `
 
-type ResultProps = {
-    data: number | undefined,
-    isFetching: boolean,
-    isThrottled: boolean,
-    error: any,
-}
-
-export const Result = ({
-    data, 
-    isFetching, 
-    isThrottled,
-    error,
-} : ResultProps) => {
+export const Result = () => {
+    const {data, error, isFetching, isThrottled} = useContext<TAlphaVantageContext>(AlphaVantageContext);
     return (
         <Container>
             {isFetching &&

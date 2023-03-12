@@ -7,7 +7,8 @@ import FormControl from '@mui/material/FormControl';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import { DatePicker } from '@mui/lab';
-import { Dispatch, SetStateAction } from 'react';
+import { useContext } from 'react';
+import { PurchaseDataContext, TPurchaseDataContext } from '../../contexts';
 
 const Header = styled.header`
 display: flex;
@@ -32,25 +33,17 @@ padding-left: 10px;
 padding-right: 10px;
 `
 
-type FormProps = {
-    coin: string,
-    firstDate: Date,
-    purchaseDate: string | null,
-    setAmount: Dispatch<SetStateAction<number | null>>,
-    setCoin: Dispatch<SetStateAction<string>>,
-    setPurchaseDate: Dispatch<SetStateAction<string | null>>,
-    setLocalizedPurchaseDate: Dispatch<SetStateAction<string | null>>,
-}
+export const RequestForm = () => {
+    const { 
+        coin, 
+        firstAvailableDate,
+        purchaseDate, 
+        setAmount, 
+        setCoin, 
+        setPurchaseDate, 
+        setLocalizedPurchaseDate, 
+    } = useContext<TPurchaseDataContext>(PurchaseDataContext);
 
-export const Form = ({
-    coin,
-    firstDate,
-    purchaseDate,
-    setAmount,
-    setCoin,
-    setPurchaseDate,
-    setLocalizedPurchaseDate,
-}: FormProps) => {
     const applyNewDate = (value: Date | null) => {
         if (!!value && (value.toString() !== "Invalid Date")) {
             const dateString = value.toISOString().slice(0, 10);
@@ -63,10 +56,10 @@ export const Form = ({
                 year: 'numeric',
                 month: '2-digit',
                 day: '2-digit'
-                }).split('/').reverse().join('-');
-                const parts = isoString.split('-');
-                const localDateString = `${parts[0]}-${parts[2]}-${parts[1]}`;
-                setLocalizedPurchaseDate(localDateString);
+            }).split('/').reverse().join('-');
+            const parts = isoString.split('-');
+            const localDateString = `${parts[0]}-${parts[2]}-${parts[1]}`;
+            setLocalizedPurchaseDate(localDateString);
         }
     }
 
@@ -79,7 +72,7 @@ export const Form = ({
                     views={['year', 'day']}
                     label='Date*'
                     value={purchaseDate}
-                    minDate={firstDate}
+                    minDate={firstAvailableDate}
                     maxDate={new Date()}
                     onChange={(newValue) => {
                         applyNewDate(newValue);

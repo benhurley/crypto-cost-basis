@@ -3,11 +3,12 @@ import { Button } from '@mui/material';
 import { useQuery } from 'react-query';
 import { round } from './helpers';
 import styled, { createGlobalStyle } from 'styled-components';
-import { Form } from './components/form';
+import { RequestForm } from './components/requestForm';
 import { Disclaimer } from './components/disclaimer';
 import { Footer } from './components/footer';
 import { Result } from './components/result';
 import isBefore from 'date-fns/isBefore';
+import { AlphaVantageContext, PurchaseDataContext } from './contexts';
 
 const photo = require('./img/nerd.png');
 
@@ -72,8 +73,8 @@ function App() {
   const [amount, setAmount] = useState<number | null>(null)
   const [isThrottled, setIsThrottled] = useState<boolean>(false);
   const [inputError, setInputError] = useState<string | null>(null);
-  const firstDate: Date = useMemo(() => new Date('June 4, 2020'), []); // earliest date api supports
-  const isOutOfRangeDate = !!purchaseDate && isBefore(new Date(purchaseDate), firstDate)
+  const firstAvailableDate: Date = useMemo(() => new Date('June 4, 2020'), []); // earliest date api supports
+  const isOutOfRangeDate = !!purchaseDate && isBefore(new Date(purchaseDate), firstAvailableDate)
 
   const handleThrottle = () => {
     setIsThrottled(true);
@@ -102,54 +103,41 @@ function App() {
   };
 
   const { isFetching, error, data, refetch } = useQuery('cryptoPrices', fetchPrice, { enabled: false });
-  const isButtonDisabled = coin === '' || !purchaseDate || isOutOfRangeDate || !amount || amount <= 0 || isFetching || isThrottled;
+  const isEstimateButtonDisabled = coin === '' || !purchaseDate || isOutOfRangeDate || !amount || amount <= 0 || isFetching || isThrottled;
 
   useEffect(() => {
     if (!!coin && !!amount && isOutOfRangeDate) {
-      setInputError(`Must be a date after ${firstDate.toString().slice(0,15)}`)
+      setInputError(`Must be a date after ${firstAvailableDate.toString().slice(0, 15)}`)
     } else if (amount !== null && amount <= 0) {
       setInputError('Quantity must be a positive value')
     } else {
       setInputError(null)
     }
-  }, [amount, coin, isOutOfRangeDate, firstDate])
+  }, [amount, coin, isOutOfRangeDate, firstAvailableDate])
 
   return (
-    <>
-      <GlobalStyle />
-      <AppContainer>
-        <Title>CRYPTO COST-BASIS ENGINE</Title>
-        <Subtitle>A good way to guess what that NFT cost you last year.</Subtitle>
-        <img src={photo} height='175' alt='accountant logo' />
-        <Form
-          coin={coin}
-          firstDate={firstDate}
-          purchaseDate={purchaseDate}
-          setAmount={setAmount}
-          setCoin={setCoin}
-          setPurchaseDate={setPurchaseDate}
-          setLocalizedPurchaseDate={setLocalizedPurchaseDate}
-        />
-        {inputError &&
-          <InputError>{inputError}</InputError>
-        }
-        <Button
-          disabled={isButtonDisabled}
-          size='large'
-          variant='contained'
-          onClick={() => refetch()}>
-          Get Estimate
-        </Button>
-        <Result
-          data={data}
-          isFetching={isFetching}
-          isThrottled={isThrottled}
-          error={error}
-        />
-        <Footer />
-        <Disclaimer />
-      </AppContainer>
-    </>
+    <AlphaVantageContext.Provider value={{ data, error, isFetching, isThrottled }}>
+      <PurchaseDataContext.Provider value={{ coin, firstAvailableDate, purchaseDate, setAmount, setCoin, setLocalizedPurchaseDate, setPurchaseDate }}>
+        <GlobalStyle />
+        <AppContainer>
+          <Title>CRYPTO COST-BASIS ENGINE</Title>
+          <Subtitle>A good way to guess what that NFT cost you last year.</Subtitle>
+          <img src={photo} height='175' alt='accountant logo' />
+          <RequestForm />
+          {inputError && <InputError>{inputError}</InputError>}
+          <Button
+            disabled={isEstimateButtonDisabled}
+            size='large'
+            variant='contained'
+            onClick={() => refetch()}>
+            Get Estimate
+          </Button>
+          <Result />
+          <Footer />
+          <Disclaimer />
+        </AppContainer>
+      </PurchaseDataContext.Provider>
+    </AlphaVantageContext.Provider>
   );
 }
 
