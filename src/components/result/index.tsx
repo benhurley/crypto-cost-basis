@@ -27,7 +27,7 @@ padding-right: 25px;
 `
 
 export const Result = () => {
-    const {data, error, isFetching, isThrottled} = useContext<TAlphaVantageContext>(AlphaVantageContext);
+    const { data, error, isFetching, isThrottled } = useContext<TAlphaVantageContext>(AlphaVantageContext);
     return (
         <Container>
             {isFetching &&
@@ -44,7 +44,7 @@ export const Result = () => {
                 <Warning>Max 5 requests per minute.</Warning>
             }
             {error &&
-                <Warning>Error fetching price data. Please try a different date.</Warning>
+                <Warning>Error: Daily limit may have been reached, check console for details.</Warning>
             }
         </Container>
     );

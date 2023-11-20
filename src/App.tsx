@@ -28,6 +28,7 @@ interface ApiResult {
     }
   };
   "Note"?: string;
+  "Information"?: string;
 }
 
 const GlobalStyle = createGlobalStyle`
@@ -98,6 +99,8 @@ function App() {
         } else {
           throw new Error(`Failed to parse price for ${coin} on ${localizedPurchaseDate}`);
         }
+      } else if (!!result && result['Information']) {
+        throw new Error (result['Information']);
       }
     }
   };
