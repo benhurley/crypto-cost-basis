@@ -15,13 +15,13 @@ const photo = require('./img/nerd.png');
 interface ApiResult {
   "Time Series (Digital Currency Daily)"?: {
     [date: string]: {
-      "1a. open (CNY)": string;
+      "1a. open (USD)": string;
       "1b. open (USD)": string;
-      "2a. high (CNY)": string;
+      "2a. high (USD)": string;
       "2b. high (USD)": string;
-      "3a. low (CNY)": string;
+      "3a. low (USD)": string;
       "3b. low (USD)": string;
-      "4a. close (CNY)": string;
+      "4a. close (USD)": string;
       "4b. close (USD)": string;
       "5. volume": string;
       "6. market cap (USD)": string;
@@ -85,7 +85,7 @@ function App() {
 
   const fetchPrice = async () => {
     if (coin !== "") {
-      const cryptoPriceApi = `https://www.alphavantage.co/query?function=DIGITAL_CURRENCY_DAILY&symbol=${coin}&market=CNY&apikey=B51E4JGUNRQKOGTH`;
+      const cryptoPriceApi = `https://www.alphavantage.co/query?function=DIGITAL_CURRENCY_DAILY&symbol=${coin}&market=USD&apikey=B51E4JGUNRQKOGTH`;
       const res = await fetch(cryptoPriceApi);
       const result: ApiResult = await res.json();
 
