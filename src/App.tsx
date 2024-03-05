@@ -53,13 +53,9 @@ font-family: 'Courier New', Courier, monospace;
 `
 
 const Title = styled.h1`
-margin: 50px 0px 10px 0px;
+margin: 50px 0px;
 font-size: 40px;
 color: rgb(121, 121, 121);
-`
-
-const Subtitle = styled.p`
-margin: 0px 40px 30px 40px;
 `
 
 const InputError = styled.p`
@@ -124,7 +120,6 @@ function App() {
         <GlobalStyle />
         <AppContainer>
           <Title>CRYPTO COST-BASIS ENGINE</Title>
-          <Subtitle>A good way to guess what that NFT cost you last year.</Subtitle>
           <img src={photo} height='175' alt='accountant logo' />
           <RequestForm />
           {inputError && <InputError>{inputError}</InputError>}
