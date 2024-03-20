@@ -11,7 +11,6 @@ color: rgb(121, 121, 121);
 `
 
 const Dollars = styled.span`
-color: green;
 font-weight: bold;
 `
 
@@ -28,6 +27,11 @@ padding-right: 25px;
 
 export const Result = () => {
     const { data, error, isFetching, isThrottled } = useContext<TAlphaVantageContext>(AlphaVantageContext);
+    const formatter = new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD',
+    });
+
     return (
         <Container>
             {isFetching &&
@@ -37,7 +41,7 @@ export const Result = () => {
             }
             {data && !isFetching && !error &&
                 <Dollars>
-                    {`Estimate: $${data || 0} USD`}
+                    {`Estimate: ${formatter.format(data) || 0} USD`}
                 </Dollars>
             }
             {isThrottled &&
