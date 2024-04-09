@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-const me = require('../../img/me-reversed.webp');
+const me = require('../../img/me.webp');
 
 const Container = styled.div`
   display: flex;
