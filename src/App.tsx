@@ -84,7 +84,6 @@ function App() {
       if (!!result && result['Note']) {
         handleThrottle();
       } else if (!!result && result["Time Series (Digital Currency Daily)"]) {
-        debugger
         const price = result["Time Series (Digital Currency Daily)"][localizedPurchaseDate || ""]["4. close"];
         if (!!price && !!amount) {
           return round(parseFloat(price) * amount);
