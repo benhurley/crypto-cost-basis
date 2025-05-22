@@ -15,16 +15,11 @@ const photo = require('./img/nerd.png');
 interface ApiResult {
   "Time Series (Digital Currency Daily)"?: {
     [date: string]: {
-      "1a. open (USD)": string;
-      "1b. open (USD)": string;
-      "2a. high (USD)": string;
-      "2b. high (USD)": string;
-      "3a. low (USD)": string;
-      "3b. low (USD)": string;
-      "4a. close (USD)": string;
-      "4b. close (USD)": string;
-      "5. volume": string;
-      "6. market cap (USD)": string;
+      "1. open": string
+      "2. high": string
+      "3. low": string
+      "4. close": string
+      "5. volume": string,
     }
   };
   "Note"?: string;
@@ -70,7 +65,7 @@ function App() {
   const [amount, setAmount] = useState<number | null>(null)
   const [isThrottled, setIsThrottled] = useState<boolean>(false);
   const [inputError, setInputError] = useState<string | null>(null);
-  const firstAvailableDate: Date = useMemo(() => new Date('June 4, 2020'), []); // earliest date api supports
+  const firstAvailableDate: Date = useMemo(() => new Date('June 7, 2024'), []); // earliest date api supports
   const isOutOfRangeDate = !!purchaseDate && isBefore(new Date(purchaseDate), firstAvailableDate)
 
   const handleThrottle = () => {
@@ -89,14 +84,15 @@ function App() {
       if (!!result && result['Note']) {
         handleThrottle();
       } else if (!!result && result["Time Series (Digital Currency Daily)"]) {
-        const price = result["Time Series (Digital Currency Daily)"][localizedPurchaseDate || ""]['4b. close (USD)'];
+        debugger
+        const price = result["Time Series (Digital Currency Daily)"][localizedPurchaseDate || ""]["4. close"];
         if (!!price && !!amount) {
           return round(parseFloat(price) * amount);
         } else {
           throw new Error(`Failed to parse price for ${coin} on ${localizedPurchaseDate}`);
         }
       } else if (!!result && result['Information']) {
-        throw new Error (result['Information']);
+        throw new Error(result['Information']);
       }
     }
   };
